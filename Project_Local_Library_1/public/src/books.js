@@ -1,3 +1,5 @@
+const { findAccountById } = require("./accounts");
+
 const findAuthorById = (authors, id) => authors.find((author) => author.id === id);
 
 const findBookById = (books, id) => books.find((book) => book.id === id);
@@ -11,19 +13,15 @@ function partitionBooksByBorrowedStatus(books) {
     return result;
 }
 
-function getBorrowersForBook(book, accounts) {
-  let result = [];
-  for (let i = 0; i < book.borrows.length; i++) {
-    for (let j = 0; j < accounts.length; j++) {
-      if (book.borrows[i].id === accounts[j].id) {
-       result.push({...book.borrows[i], ...accounts[j]});
-      }
-    }
-  }
-  return result.slice(0, 10);
+
+const getBorrowersForBook = (book, accounts) => {
+  let result = book.borrows.map((borrowed) => {
+    let foundAccount = findAccountById(accounts, borrowed.id);
+    foundAccount.returned = borrowed.returned;
+    return foundAccount;
+  });
+  return result.slice(0,10); 
 }
-
-
 
 
 
